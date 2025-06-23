@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Red Alert - Phone Hacked</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+
+        html,
+        body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: black;
+            color: red;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overscroll-behavior: none;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            animation: blink 0.9s infinite;
+        }
+
+        p {
+            margin-top: 20px;
+            font-size: 1.3rem;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .keypad button {
+            background: red;
+            border: none;
+            font-size: 1.5rem;
+            padding: 15px;
+            border-radius: 10px;
+            color: black;
+            cursor: pointer;
+        }
+
+        .send-btn {
+            margin-top: 20px;
+            background: lime;
+            color: black;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .code-output {
+            margin-top: 15px;
+            font-size: 1.5rem;
+            letter-spacing: 8px;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="bg-audio" autoplay loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <h1>🔴 RED ALERT: YOUR PHONE IS HACKED</h1>
+    <p>Send money to recover your access.<br>System locked. Type correct code to unlock.</p>
+
+    <button class="send-btn" onclick="location.href='https://www.google.com/search?q=upi+payment'">💸 Send Money</button>
+
+    <div class="keypad">
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button>0</button>
+    </div>
+    <div class="code-output" id="output"></div>
+
+    <script>
+        // Trap user in page using history + attempt count
+        let backAttempts = 0;
+        history.pushState(null, null, location.href);
+        window.onpopstate = function() {
+            backAttempts++;
+            if (backAttempts < 10) {
+                history.pushState(null, null, location.href);
+                alert("Exit Blocked! 🔒 Attempt " + backAttempts + "/10");
+            } else {
+                alert("You're free now! 😅");
+                window.history.go(-10);
+            }
+        };
+
+        // Force full screen on user interaction
+        function requestFullScreen() {
+            const el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            else if (el.msRequestFullscreen) el.msRequestFullscreen();
+        }
+
+        document.addEventListener("click", requestFullScreen);
+        document.addEventListener("touchstart", requestFullScreen);
+
+        // Start vibration loop
+        function startVibration() {
+            if (navigator.vibrate) {
+                setInterval(() => navigator.vibrate([200, 100, 200]), 1000);
+            }
+        }
+        startVibration();
+
+        // Disable context menu and gestures
+        window.addEventListener("contextmenu", e => e.preventDefault());
+        window.addEventListener("gesturestart", e => e.preventDefault());
+        window.addEventListener("gesturechange", e => e.preventDefault());
+        window.addEventListener("gestureend", e => e.preventDefault());
+
+        // Keypad logic
+        let entered = "";
+        const output = document.getElementById("output");
+        const buttons = document.querySelectorAll(".keypad button");
+
+        buttons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (entered.length < 4) {
+                    entered += btn.textContent;
+                    output.textContent = entered;
+                }
+                if (entered === "0000") {
+                    document.exitFullscreen?.();
+                    navigator.vibrate(0); // Stop vibration
+                    document.body.innerHTML = `
+            <div style="color: lime; text-align:center; padding:40px">
+              <h1>😅 Relax! This was a prank by Kalit!</h1>
+              <p>Next time, don’t mess with the smartest dev 😎</p>
+            </div>
+          `;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
